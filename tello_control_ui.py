@@ -9,13 +9,17 @@ import os
 import time
 import platform
 
-# bob = tello.Tello()
-
 
 class TelloUI:
     """Wrapper class to enable the GUI."""
 
     def __init__(self, tello, outputpath):
+
+class TelloUI:
+    """Wrapper class to enable the GUI."""
+
+    def __init__(self,tello,outputpath):
+
         """
         Initial all the element of the GUI,support by Tkinter
 
@@ -23,7 +27,7 @@ class TelloUI:
 
         Raises:
             RuntimeError: If the Tello rejects the attempt to enter command mode.
-        """
+
 
         self.tello = tello # videostream device
         self.outputPath = outputpath # the path that save pictures created by clicking the takeSnapshot button 
@@ -53,6 +57,7 @@ class TelloUI:
                             expand="yes", padx=10, pady=5)
 
         self.btn_landing = tki.Button(
+
             self.root, text="Open Flight Mode Panel", relief="raised", command=self.optionWindow)
         self.btn_landing.pack(side="bottom", fill="both",
                               expand="yes", padx=10, pady=5)
@@ -61,6 +66,11 @@ class TelloUI:
             self.root, text="Exit Flight Controller", relief="raised", command=self.onClose)
         self.btn_stop.pack(side="bottom", fill="both",
                            expand="yes", padx=10, pady=5)
+
+            self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
+        self.btn_landing.pack(side="bottom", fill="both",
+                              expand="yes", padx=10, pady=5)
+
         
         # start a thread that constantly pools the video sensor for
         # the most recently read frame
@@ -109,6 +119,7 @@ class TelloUI:
         except RuntimeError, e:
             print("[INFO] caught a RuntimeError")
 
+
     def _updateGUIImage(self,image):
         """
         Main operation to initial the object of image,and update the GUI panel 
@@ -124,6 +135,7 @@ class TelloUI:
             self.panel.configure(image=image)
             self.panel.image = image
 
+
     def _sendingCommand(self):
         """
         start a while loop that sends 'command' to tello every 5 second
@@ -131,12 +143,17 @@ class TelloUI:
 
         while True:
             self.tello.send_command('command')        
+
             time.sleep(10)
+
+            time.sleep(5)
+
 
     def _setQuitWaitingFlag(self):  
         """
         set the variable as TRUE,it will stop computer waiting for response from tello  
         """       
+
         self.quit_waiting_flag = True
 
     def optionWindow(self):
@@ -210,6 +227,16 @@ class TelloUI:
         """
         panel = Toplevel(self.root)
         panel.wm_title("Manual Command Panel")
+
+        self.quit_waiting_flag = True        
+   
+    def openCmdWindow(self):
+        """
+        open the cmd window and initial all the button and text
+        """        
+        panel = Toplevel(self.root)
+        panel.wm_title("Command Panel")
+
 
         # create text input entry
         text0 = tki.Label(panel,
@@ -330,7 +357,11 @@ class TelloUI:
             self.tello.video_freeze(True)
 
     def telloTakeOff(self):
+
         return self.tello.takeoff()
+
+        return self.tello.takeoff()                
+
 
     def telloLanding(self):
         return self.tello.land()

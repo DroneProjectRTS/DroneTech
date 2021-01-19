@@ -5,6 +5,8 @@ import numpy as np
 import libh264decoder
 
 
+=======
+
 class Tello:
     """Wrapper class to interact with the Tello drone."""
 
@@ -132,6 +134,7 @@ class Tello:
 
         return res_frame_list
 
+
     def send_autocommand(self, sec):
 
         # Route Base to 0
@@ -202,6 +205,7 @@ class Tello:
 
         # Print message
         print ("Mission accomplished!")
+
 
     def send_command(self, command):
         """

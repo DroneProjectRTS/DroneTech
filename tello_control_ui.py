@@ -9,10 +9,17 @@ import os
 import time
 import platform
 
+
+class TelloUI:
+    """Wrapper class to enable the GUI."""
+
+    def __init__(self, tello, outputpath):
+
 class TelloUI:
     """Wrapper class to enable the GUI."""
 
     def __init__(self,tello,outputpath):
+
         """
         Initial all the element of the GUI,support by Tkinter
 
@@ -20,7 +27,7 @@ class TelloUI:
 
         Raises:
             RuntimeError: If the Tello rejects the attempt to enter command mode.
-        """        
+
 
         self.tello = tello # videostream device
         self.outputPath = outputpath # the path that save pictures created by clicking the takeSnapshot button 
@@ -50,9 +57,20 @@ class TelloUI:
                             expand="yes", padx=10, pady=5)
 
         self.btn_landing = tki.Button(
+
+            self.root, text="Open Flight Mode Panel", relief="raised", command=self.optionWindow)
+        self.btn_landing.pack(side="bottom", fill="both",
+                              expand="yes", padx=10, pady=5)
+
+        self.btn_stop = tki.Button(
+            self.root, text="Exit Flight Controller", relief="raised", command=self.onClose)
+        self.btn_stop.pack(side="bottom", fill="both",
+                           expand="yes", padx=10, pady=5)
+
             self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
         self.btn_landing.pack(side="bottom", fill="both",
                               expand="yes", padx=10, pady=5)
+
         
         # start a thread that constantly pools the video sensor for
         # the most recently read frame
@@ -66,6 +84,7 @@ class TelloUI:
 
         # the sending_command will send command to tello every 5 seconds
         self.sending_command_thread = threading.Thread(target = self._sendingCommand)
+
     def videoLoop(self):
         """
         The mainloop thread of Tkinter 
@@ -100,7 +119,7 @@ class TelloUI:
         except RuntimeError, e:
             print("[INFO] caught a RuntimeError")
 
-           
+
     def _updateGUIImage(self,image):
         """
         Main operation to initial the object of image,and update the GUI panel 
@@ -116,7 +135,7 @@ class TelloUI:
             self.panel.configure(image=image)
             self.panel.image = image
 
-            
+
     def _sendingCommand(self):
         """
         start a while loop that sends 'command' to tello every 5 second
@@ -124,12 +143,91 @@ class TelloUI:
 
         while True:
             self.tello.send_command('command')        
+
+            time.sleep(10)
+
             time.sleep(5)
+
 
     def _setQuitWaitingFlag(self):  
         """
         set the variable as TRUE,it will stop computer waiting for response from tello  
         """       
+
+        self.quit_waiting_flag = True
+
+    def optionWindow(self):
+
+        panel = Toplevel(self.root)
+        panel.wm_title("Mode Panel")
+        text0 = tki.Label(panel,
+                          text=' ',
+                          font='Helvetica 7'
+                          )
+        text0.pack(side='top')
+        text1 = tki.Label(panel,
+                          text='This Mode Panel lets the personnel to choose the flight mode\n'
+                               'Choose the flight mode to fly the drone. ',
+                          font='Helvetica 13'
+                          )
+        text1.pack(side='top')
+
+        text2 = tki.Label(panel,
+                          text=' ',
+                          font='Helvetica 16'
+                          )
+        text2.pack(side='top')
+
+        self.btn1 = tki.Button(
+            panel, text="Autonomous Flight", relief="raised", command=self.openAutoCmdWindow)
+        self.btn1.pack(side="bottom", fill="both",
+                              expand="yes", padx=10, pady=5)
+
+        self.btn2 = tki.Button(
+            panel, text="Manual Flight", relief="raised", command=self.openManualCmdWindow)
+        self.btn2.pack(side="bottom", fill="both",
+                       expand="yes", padx=10, pady=5)
+
+        self.quit_waiting_flag = True
+
+    def openAutoCmdWindow(self):
+        panel = Toplevel(self.root)
+        panel.wm_title("Autonomous Command Panel")
+
+        text0 = tki.Label(panel,
+                          text=' ',
+                          font='Helvetica 5'
+                          )
+        text0.pack(side='top')
+
+        text1 = tki.Label(panel,
+                          text='This Mode Panel initiates the autonomous drone flight\n',
+                          font='Helvetica 13'
+                          )
+        text1.pack(side='top')
+
+        self.btn_takeoff = tki.Button(
+            panel, text="Take Off", relief="raised", command=self.autoTakeOff)
+        self.btn_takeoff.pack(side="bottom", fill="both",
+                              expand="yes", padx=10, pady=5)
+
+        self.btn_stop = tki.Button(
+            panel, text="Stop Flight", relief="raised", command=self.onClose)
+        self.btn_stop.pack(side="bottom", fill="both",
+                              expand="yes", padx=10, pady=5)
+
+    def autoTakeOff(self):
+        self.tello.send_autocommand(5)
+        # time.sleep(5)
+
+
+    def openManualCmdWindow(self):
+        """
+        open the cmd window and initial all the button and text
+        """
+        panel = Toplevel(self.root)
+        panel.wm_title("Manual Command Panel")
+
         self.quit_waiting_flag = True        
    
     def openCmdWindow(self):
@@ -138,6 +236,7 @@ class TelloUI:
         """        
         panel = Toplevel(self.root)
         panel.wm_title("Command Panel")
+
 
         # create text input entry
         text0 = tki.Label(panel,
@@ -258,7 +357,11 @@ class TelloUI:
             self.tello.video_freeze(True)
 
     def telloTakeOff(self):
+
+        return self.tello.takeoff()
+
         return self.tello.takeoff()                
+
 
     def telloLanding(self):
         return self.tello.land()

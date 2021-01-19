@@ -4,6 +4,9 @@ import time
 import numpy as np
 import libh264decoder
 
+
+=======
+
 class Tello:
     """Wrapper class to interact with the Tello drone."""
 
@@ -130,6 +133,79 @@ class Tello:
                 res_frame_list.append(frame)
 
         return res_frame_list
+
+
+    def send_autocommand(self, sec):
+
+        # Route Base to 0
+        print ("Drone is moving forward for 20 cm.")
+        self.send_command("forward " + str(20))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 35 degrees")
+        self.send_command("ccw " + str(35))
+        time.sleep(5)
+
+        # Route 0 to 1
+        print ("Drone is moving forward for 100 cm.")
+        self.send_command("forward " + str(100))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 90 degrees")
+        self.send_command("ccw " + str(90))
+        time.sleep(5)
+
+        # Route 1 to 2
+        print ("Drone is moving forward for 80 cm.")
+        self.send_command("forward " + str(80))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 90 degrees")
+        self.send_command("ccw " + str(90))
+        time.sleep(5)
+
+        # Route 2 to 3
+        print ("Drone is moving forward for 40 cm.")
+        self.send_command("forward " + str(40))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 90 degrees")
+        self.send_command("ccw " + str(90))
+        time.sleep(5)
+
+        # Route 3 to 4
+        print ("Drone is moving forward for 40 cm.")
+        self.send_command("forward " + str(40))
+        time.sleep(5)
+        print ("Drone is going to turn clockwise 90 degrees")
+        self.send_command("cw " + str(90))
+        time.sleep(5)
+
+        # Route 4 to 5
+        print ("Drone is moving forward for 60 cm.")
+        self.send_command("forward " + str(60))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 90 degrees")
+        self.send_command("ccw " + str(90))
+        time.sleep(5)
+
+        # Route 5 to base
+        print ("Drone is moving forward for 20 cm.")
+        self.send_command("forward " + str(20))
+        time.sleep(5)
+        print ("Drone is going to turn counter-clockwise 90 degrees")
+        self.send_command("ccw " + str(90))
+        time.sleep(5)
+        print ("Drone is moving forward for 20 cm to the base.")
+        self.send_command("forward " + str(20))
+
+        # Origin angle
+        print ("Drone is going to turn clockwise 135 degrees to original angle")
+        self.send_command("ccw " + str(135))
+
+        # Send the land command
+        self.send_command("land ")
+        time.sleep(7)
+
+        # Print message
+        print ("Mission accomplished!")
+
 
     def send_command(self, command):
         """

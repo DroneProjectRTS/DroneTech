@@ -30,7 +30,9 @@ class TelloUI:
         self.outputPath = outputpath # the path that save pictures created by clicking the takeSnapshot button 
         self.frame = None  # frame read from h264decoder and used for pose recognition 
         self.thread = None # thread of the Tkinter mainloop
-        self.stopEvent = None  
+        self.stopEvent = None
+        self.sending_autotakeoff_thread = None
+        self.pauseAutoPilot = threading.Event()
         
         # control variables
         self.distance = 0.1  # default distance for 'move' cmd
@@ -44,10 +46,10 @@ class TelloUI:
         self.panel = None
 
         # create buttons
-        self.btn_snapshot = tki.Button(self.root, text="Snapshot!",
-                                       command=self.takeSnapshot)
-        self.btn_snapshot.pack(side="bottom", fill="both",
-                               expand="yes", padx=10, pady=5)
+        # self.btn_snapshot = tki.Button(self.root, text="Snapshot!",
+        #                                command=self.takeSnapshot)
+        # self.btn_snapshot.pack(side="bottom", fill="both",
+        #                        expand="yes", padx=10, pady=5)
 
         self.btn_pause = tki.Button(self.root, text="Pause", relief="raised", command=self.pauseVideo)
         self.btn_pause.pack(side="bottom", fill="both",
@@ -207,28 +209,29 @@ class TelloUI:
 
         self.btn_takeoff = tki.Button(
             panel, text="Take Off", relief="raised", command=self.autoTakeOff)
-        self.btn_takeoff.pack(side="bottom", fill="both",
+        self.btn_takeoff.pack(side="top", fill="both",
                               expand="yes", padx=10, pady=5)
 
         self.btn_stop = tki.Button(
             panel, text="Stop Flight", relief="raised", command=self.onClose)
-        self.btn_stop.pack(side="bottom", fill="both",
+        self.btn_stop.pack(side="top", fill="both",
                               expand="yes", padx=10, pady=5)
 
+        self.btn_interupt = tki.Button(
+            panel, text="Interrupt", relief="raised", command=self.interrupt)
+        self.btn_interupt.pack(side="top", fill="both",
+                           expand="yes", padx=10, pady=5)
+
+        self.btn_resume = tki.Button(
+            panel, text="Resume", relief="raised", command=self.resume)
+        self.btn_resume.pack(side="top", fill="both",
+                               expand="yes", padx=10, pady=5)
+
     def autoTakeOff(self):
-        self.tello.send_autocommand(5)
-        # time.sleep(5)
+        self.sending_autotakeoff_thread = threading.Thread(target=self.tello.send_autocommand(5))
+        self.sending_autotakeoff_thread.start()
 
 
-    # def openManualCmdWindow(self):
-    #     """
-    #     open the cmd window and initial all the button and text
-    #     """
-    #     panel = Toplevel(self.root)
-    #     panel.wm_title("Manual Command Panel")
-    #
-    #     self.quit_waiting_flag = True
-   
     def openManualCmdWindow(self):
         """
         open the cmd window and initial all the button and text
@@ -278,6 +281,7 @@ class TelloUI:
         self.tmp_f.bind('<KeyPress-Down>', self.on_keypress_down)
         self.tmp_f.bind('<KeyPress-Left>', self.on_keypress_left)
         self.tmp_f.bind('<KeyPress-Right>', self.on_keypress_right)
+
         self.tmp_f.pack(side="bottom")
         self.tmp_f.focus_set()
 
@@ -371,16 +375,16 @@ class TelloUI:
         return self.tello.land()
 
     def telloFlip_l(self):
-        return self.tello.flip('l')
+        return self.tello.flip('left')
 
     def telloFlip_r(self):
-        return self.tello.flip('r')
+        return self.tello.flip('right')
 
     def telloFlip_f(self):
-        return self.tello.flip('f')
+        return self.tello.flip('front')
 
     def telloFlip_b(self):
-        return self.tello.flip('b')
+        return self.tello.flip('back')
 
     def telloCW(self, degree):
         return self.tello.rotate_cw(degree)
@@ -433,6 +437,7 @@ class TelloUI:
         print "cw %d m" % self.degree
         self.tello.rotate_cw(self.degree)
 
+
     def on_keypress_up(self, event):
         print "forward %d m" % self.distance
         self.telloMoveForward(self.distance)
@@ -465,4 +470,22 @@ class TelloUI:
         del self.tello
         self.root.quit()
         print("Thank you for using Tello. We learn a lot...")
+
+
+    def interrupt(self):
+        print "stop, switching to manual"
+        self.tello.stop()
+
+        if self.pauseAutoPilot is not None:
+            self.pauseAutoPilot.clear()
+
+        tki.Button(text="Manual Flight", relief="raised", command=self.openManualCmdWindow).invoke()
+
+
+    def resume(self):
+        print "resume, switching back to autopilot"
+        self.tello.resume()
+
+
+
 

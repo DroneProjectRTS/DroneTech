@@ -531,3 +531,9 @@ class Tello:
         """
 
         return self.move('up', distance)
+
+    def stop(self):
+        return self.send_command('stop')
+
+    def resume(self):
+        return self.send_command('resume')

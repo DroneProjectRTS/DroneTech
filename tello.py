@@ -5,8 +5,6 @@ import numpy as np
 import libh264decoder
 
 
-=======
-
 class Tello:
     """Wrapper class to interact with the Tello drone."""
 

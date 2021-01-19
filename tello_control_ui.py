@@ -64,10 +64,10 @@ class TelloUI:
         self.btn_stop.pack(side="bottom", fill="both",
                            expand="yes", padx=10, pady=5)
 
-        self.btn_landing = tki.Button(
-            self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
-        self.btn_landing.pack(side="bottom", fill="both",
-                              expand="yes", padx=10, pady=5)
+        # self.btn_landing = tki.Button(
+        #     self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
+        # self.btn_landing.pack(side="bottom", fill="both",
+        #                       expand="yes", padx=10, pady=5)
 
         
         # start a thread that constantly pools the video sensor for
@@ -220,16 +220,16 @@ class TelloUI:
         # time.sleep(5)
 
 
-    def openManualCmdWindow(self):
-        """
-        open the cmd window and initial all the button and text
-        """
-        panel = Toplevel(self.root)
-        panel.wm_title("Manual Command Panel")
-
-        self.quit_waiting_flag = True        
+    # def openManualCmdWindow(self):
+    #     """
+    #     open the cmd window and initial all the button and text
+    #     """
+    #     panel = Toplevel(self.root)
+    #     panel.wm_title("Manual Command Panel")
+    #
+    #     self.quit_waiting_flag = True
    
-    def openCmdWindow(self):
+    def openManualCmdWindow(self):
         """
         open the cmd window and initial all the button and text
         """        

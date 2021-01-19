@@ -139,8 +139,8 @@ class Tello:
         print ("Drone is moving forward for 20 cm.")
         self.send_command("forward " + str(20))
         time.sleep(5)
-        print ("Drone is going to turn counter-clockwise 35 degrees")
-        self.send_command("ccw " + str(35))
+        print ("Drone is going to turn counter-clockwise 135 degrees")
+        self.send_command("ccw " + str(135))
         time.sleep(5)
 
         # Route 0 to 1

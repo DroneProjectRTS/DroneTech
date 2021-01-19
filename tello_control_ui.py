@@ -141,7 +141,7 @@ class TelloUI:
         """    
 
         while True:
-            self.tello.send_command('command')        
+            # self.tello.send_command('command')
 
             time.sleep(10)
 
@@ -234,7 +234,7 @@ class TelloUI:
         open the cmd window and initial all the button and text
         """        
         panel = Toplevel(self.root)
-        panel.wm_title("Command Panel")
+        panel.wm_title("Manual Command Panel")
 
 
         # create text input entry
@@ -248,10 +248,15 @@ class TelloUI:
         text1 = tki.Label(panel, text=
                           'W - Move Tello Up\t\t\tArrow Up - Move Tello Forward\n'
                           'S - Move Tello Down\t\t\tArrow Down - Move Tello Backward\n'
-                          'A - Rotate Tello Counter-Clockwise\tArrow Left - Move Tello Left\n'
-                          'D - Rotate Tello Clockwise\t\tArrow Right - Move Tello Right',
+                          'A - Rotate Tello Counter-Clockwise\t\tArrow Left - Move Tello Left\n'
+                          'D - Rotate Tello Clockwise\t\t\tArrow Right - Move Tello Right',
                           justify="left")
         text1.pack(side="top")
+        text2 = tki.Label(panel, text=
+                          '(After adjust the distance or the degree of the drone,'
+                          'click the Reset button respectively)',
+                          justify="center")
+        text2.pack(side="top", fill="both", expand="yes")
 
         self.btn_landing = tki.Button(
             panel, text="Land", relief="raised", command=self.telloLanding)
@@ -281,9 +286,9 @@ class TelloUI:
         self.btn_landing.pack(side="bottom", fill="both",
                               expand="yes", padx=10, pady=5)
 
-        self.distance_bar = Scale(panel, from_=0.02, to=5, tickinterval=0.01, digits=3, label='Distance(m)',
-                                  resolution=0.01)
-        self.distance_bar.set(0.2)
+        self.distance_bar = Scale(panel, from_=0.5, to=5, tickinterval=1, digits=3, label='Distance(m)',
+                                  resolution=0.5)
+        self.distance_bar.set(0.5)
         self.distance_bar.pack(side="left")
 
         self.btn_distance = tki.Button(panel, text="Reset Distance", relief="raised",
@@ -292,7 +297,7 @@ class TelloUI:
         self.btn_distance.pack(side="left", fill="both",
                                expand="yes", padx=10, pady=5)
 
-        self.degree_bar = Scale(panel, from_=1, to=360, tickinterval=10, label='Degree')
+        self.degree_bar = Scale(panel, from_=1, to=360, tickinterval=30, label='Degree', resolution=30)
         self.degree_bar.set(30)
         self.degree_bar.pack(side="right")
 
@@ -459,4 +464,5 @@ class TelloUI:
         self.stopEvent.set()
         del self.tello
         self.root.quit()
+        print("Thank you for using Tello. We learn a lot...")
 

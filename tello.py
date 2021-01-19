@@ -46,8 +46,8 @@ class Tello:
         # to receive video -- send cmd: command, streamon
         self.socket.sendto(b'command', self.tello_address)
         print ('sent: command')
-        self.socket.sendto(b'streamon', self.tello_address)
-        print ('sent: streamon')
+        self.socket.sendto(b'stream_on', self.tello_address)
+        print ('sent: stream_on')
 
         self.socket_video.bind((local_ip, self.local_video_port))
 

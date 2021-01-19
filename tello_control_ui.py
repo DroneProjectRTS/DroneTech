@@ -10,10 +10,6 @@ import time
 import platform
 
 
-class TelloUI:
-    """Wrapper class to enable the GUI."""
-
-    def __init__(self, tello, outputpath):
 
 class TelloUI:
     """Wrapper class to enable the GUI."""
@@ -27,6 +23,7 @@ class TelloUI:
 
         Raises:
             RuntimeError: If the Tello rejects the attempt to enter command mode.
+"""
 
 
         self.tello = tello # videostream device
@@ -67,6 +64,7 @@ class TelloUI:
         self.btn_stop.pack(side="bottom", fill="both",
                            expand="yes", padx=10, pady=5)
 
+        self.btn_landing = tki.Button(
             self.root, text="Open Command Panel", relief="raised", command=self.openCmdWindow)
         self.btn_landing.pack(side="bottom", fill="both",
                               expand="yes", padx=10, pady=5)
@@ -84,6 +82,7 @@ class TelloUI:
 
         # the sending_command will send command to tello every 5 seconds
         self.sending_command_thread = threading.Thread(target = self._sendingCommand)
+
 
     def videoLoop(self):
         """
